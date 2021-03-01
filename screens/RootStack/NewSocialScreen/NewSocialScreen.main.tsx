@@ -67,8 +67,8 @@ export default function NewSocialScreen({ navigation }: Props) {
       // download URL into Firestore (where our data itself is stored). Make sure to 
       // do this using an async keyword.
 
-      // (3) Write the social model to that document reference we created in (1),
-      // using the .set() method. The eventImage should be the downloadURL that we got from (3).
+      // (3) Construct & write the social model to the "socials" collection in Firestore.
+      // The eventImage should be the downloadURL that we got from (3).
       // Make sure to do this using an async keyword.
       
       // (4) If nothing threw an error, then go back to the previous screen.
