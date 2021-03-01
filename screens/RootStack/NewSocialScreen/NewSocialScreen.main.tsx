@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Platform, View } from "react-native";
 import { Appbar, TextInput, Snackbar, Button } from "react-native-paper";
-import { getFileObjectAsync } from "../../../Utils";
+import { getFileObjectAsync, uuid } from "../../../Utils";
 
 // See https://github.com/mmazzarolo/react-native-modal-datetime-picker
 // Most of the date picker code is directly sourced from the example.
@@ -52,25 +52,29 @@ export default function NewSocialScreen({ navigation }: Props) {
     // Otherwise, proceed onwards with uploading the image, and then the object.
 
     try {
+
+      // NOTE: THE BULK OF THIS FUNCTION IS ALREADY IMPLEMENTED FOR YOU IN HINTS.TSX.
+      // READ THIS TO GET A HIGH-LEVEL OVERVIEW OF WHAT YOU NEED TO DO, THEN GO READ THAT FILE!
+
       // (0) Firebase Cloud Storage wants a Blob, so we first convert the file path
-      // saved in our eventImage state variable to a Blob. The following line
-      // might be helpful in doing that –
-      // const object: Blob = (await getFileObjectAsync(eventImage)) as Blob;
+      // saved in our eventImage state variable to a Blob.
 
-      // (1) Generate a new Firestore document reference in the "socials" node using .doc()
-      // Don't actually set the value at this node, yet.
-      const socialRef = firebase.firestore().collection("socials").doc();
-
-      // (2) Write the image to Firebase Cloud Storage.
+      // (1) Write the image to Firebase Cloud Storage. Make sure to do this
+      // using an "await" keyword, since we're in an async function. Name it using
+      // the uuid provided below.
       
-      // (3) Get the download URL of the file we just wrote. We're going to put that 
-      // download URL into Firestore (where our data itself is stored).
+      // (2) Get the download URL of the file we just wrote. We're going to put that 
+      // download URL into Firestore (where our data itself is stored). Make sure to 
+      // do this using an async keyword.
 
-      // (4) Write the social model to that document reference we created in (1),
+      // (3) Write the social model to that document reference we created in (1),
       // using the .set() method. The eventImage should be the downloadURL that we got from (3).
+      // Make sure to do this using an async keyword.
       
-      // (5) If nothing threw an error, then go back to the previous screen.
+      // (4) If nothing threw an error, then go back to the previous screen.
       //     Otherwise, show an error.
+  } catch (e) {
+    console.log('Error while writing social:', e);
   };
 
   const Bar = () => {
