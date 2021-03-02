@@ -9,6 +9,7 @@ import { SocialModel } from "../../../models/social";
 export type MainStackParamList = {
   FeedScreen: undefined;
   DetailScreen: { social: SocialModel };
+  NewSocialScreen: undefined;
 };
 
 const MainStack = createStackNavigator<MainStackParamList>();
