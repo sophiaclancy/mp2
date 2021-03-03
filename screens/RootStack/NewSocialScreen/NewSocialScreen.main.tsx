@@ -62,9 +62,9 @@ export default function NewSocialScreen({ navigation }: Props) {
       // (1) Write the image to Firebase Cloud Storage. Make sure to do this
       // using an "await" keyword, since we're in an async function. Name it using
       // the uuid provided below.
-      
-      // (2) Get the download URL of the file we just wrote. We're going to put that 
-      // download URL into Firestore (where our data itself is stored). Make sure to 
+
+      // (2) Get the download URL of the file we just wrote. We're going to put that
+      // download URL into Firestore (where our data itself is stored). Make sure to
       // do this using an async keyword.
 
       // (3) Construct & write the social model to the "socials" collection in Firestore.
@@ -73,8 +73,10 @@ export default function NewSocialScreen({ navigation }: Props) {
       
       // (4) If nothing threw an error, then go back to the previous screen.
       //     Otherwise, show an error.
-  } catch (e) {
-    console.log('Error while writing social:', e);
+
+    } catch (e) {
+      console.log("Error while writing social:", e);
+    }
   };
 
   const Bar = () => {
