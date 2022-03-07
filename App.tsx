@@ -2,7 +2,7 @@ import React from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { COLOR_ACCENT, COLOR_PRIMARY } from "./AppStyles";
-import firebase from "firebase";
+import { initializeApp, getApps } from "firebase/app";
 import { EntryStackScreen } from "./screens/EntryStackScreen";
 
 // TODO: Make sure to create a file called "keys.json" in your project
@@ -11,8 +11,8 @@ import { EntryStackScreen } from "./screens/EntryStackScreen";
 // published on Version Control.
 const firebaseConfig = require("./keys.json");
 
-if (firebase.apps.length == 0) {
-  firebase.initializeApp(firebaseConfig);
+if (getApps().length == 0) {
+  initializeApp(firebaseConfig);
 }
 
 // Theme Object for React Native Paper
