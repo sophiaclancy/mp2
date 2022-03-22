@@ -30,11 +30,16 @@
 
 */
 
-import firebase from "firebase";
+import { getFirestore, doc, collection, setDoc } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getApp } from "firebase/app";
 import { SocialModel } from "../../../models/social";
 import { getFileObjectAsync, uuid } from "../../../Utils";
 
 // This is the verbose, old way of doing things
+// Aniruth's note: This is the Firebase v8 way of doing things. It's not what we are using.
+// We are using v9, which is more modular (more imports, but smaller bundles).
+// If you want to transpile this to v9, you can, but I'm too lazy to.
 const regularNetworkRequests = () => {
   getFileObjectAsync(eventImage).then((object) => {
     firebase
@@ -65,22 +70,25 @@ const regularNetworkRequests = () => {
 };
 
 // This is the clean, new way of doing things
+// Aniruth's Note: This is the Firebase v9 way of doing things.
+// This is the version that we are using (which is modular).
+// Also note that this isn't exactly the solution. Close, but not quite.
+// Make sure you read through the Firebase documentation to understand what's going on and what's missing.
 const asyncAwaitNetworkRequests = async () => {
   const object = await getFileObjectAsync(eventImage);
-  const result = await firebase
-    .storage()
-    .ref()
-    .child(uuid() + ".jpg")
-    .put(object as Blob);
-  const downloadURL = await result.ref.getDownloadURL();
-  const doc: SocialModel = {
+  const db = getFirestore();
+  const storage = getStorage(getApp());
+  const storageRef = ref(storage, uuid() + ".jpg");
+  const result = await uploadBytes(storageRef, object);
+  const downloadURL = await getDownloadURL(result.ref);
+  const socialDoc: SocialModel = {
     eventName: eventName,
     eventDate: eventDate.getTime(),
     eventLocation: eventLocation,
     eventDescription: eventDescription,
     eventImage: downloadURL,
   };
-  await firebase.firestore().collection("socials").doc().set(doc);
+  await setDoc(socialRef, socialDoc);
   console.log("Finished social creation.");
 };
 
