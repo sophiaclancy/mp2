@@ -71,7 +71,7 @@ export default function NewSocialScreen({ navigation }: Props) {
       // The eventImage should be the downloadURL that we got from (3).
       // Make sure to do this using an async keyword.
       
-      // (4) If nothing threw an error, then go back to the previous screen.
+      // (4) If nothing threw an error, then go to confirmation screen (which is a screen you must implement).
       //     Otherwise, show an error.
 
     } catch (e) {
