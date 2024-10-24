@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { View, FlatList } from "react-native";
-import { Appbar, Card } from "react-native-paper";
+import { View, FlatList, Text } from "react-native";
+import { Appbar, Button, Card, Paragraph, Title } from "react-native-paper";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { SocialModel } from "../../../../models/social.js";
 import { styles } from "./FeedScreen.styles";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MainStackParamList } from "../MainStackScreen.js";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
 
 /* HOW TYPESCRIPT WORKS WITH PROPS:
 
@@ -26,6 +28,7 @@ interface Props {
 
 export default function FeedScreen({ navigation }: Props) {
   // TODO: Initialize a list of SocialModel objects in state.
+  const [socials, setSocials] = useState<SocialModel[]>([]);
 
   /* TYPESCRIPT HINT: 
     When we call useState(), we can define the type of the state
@@ -35,7 +38,24 @@ export default function FeedScreen({ navigation }: Props) {
   /*
     TODO: In a useEffect hook, start a Firebase observer to listen to the "socials" node in Firestore.
     Read More: https://firebase.google.com/docs/firestore/query-data/listen
-  
+    */
+  const db = getFirestore();
+
+  useEffect(() => {
+   const q = query(collection(db, "socials"));
+   const unsubscribe = onSnapshot(q, (querySnapshot) => {
+     const socialsList: SocialModel[] = [];
+     querySnapshot.forEach((doc) => {
+       socialsList.push(doc.data() as SocialModel);
+     });
+     setSocials(socialsList);
+     console.log("Current socials: ", socials);
+    });
+
+   return () => unsubscribe();
+  }, []);
+
+  /*
     Reminders:
       1. Make sure you start a listener that's attached to this node!
       2. The onSnapshot method returns a method. Make sure to return the method
@@ -52,12 +72,25 @@ export default function FeedScreen({ navigation }: Props) {
     // to this function. On tapping this card, navigate to DetailScreen
     // and pass this social.
 
-    return null;
+    return <Card onPress={() => navigation.navigate("DetailScreen", { social: item })}>
+    <Card.Cover source={{ uri: item.eventImage }} />
+      {/* <Card.Title title="Card Title" subtitle="Card Subtitle" /> */}
+      <Card.Content>
+        <Title>{item.eventName}</Title>
+        <Paragraph>i{item.eventDescription}</Paragraph>
+      </Card.Content>
+      
+    </Card>;
   };
 
   const NavigationBar = () => {
     // TODO: Return an AppBar, with a title & a Plus Action Item that goes to the NewSocialScreen.
-    return null;
+    return (
+      <Appbar.Header>
+        <Appbar.Content title="Socials" />
+        <Appbar.Action icon="plus" onPress={() => navigation.navigate("NewSocialScreen")} />
+      </Appbar.Header>
+    );
   };
 
   return (
@@ -65,6 +98,11 @@ export default function FeedScreen({ navigation }: Props) {
       {/* Embed your NavigationBar here. */}
       <View style={styles.container}>
         {/* Return a FlatList here. You'll need to use your renderItem method. */}
+        <FlatList
+          data={socials}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.eventName}
+        />
       </View>
     </>
   );
